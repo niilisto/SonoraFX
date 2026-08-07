@@ -87,7 +87,7 @@ Add these 6 events to your **Global Events** or **Frame Event Sheet**:
 
 ---
 
-## 📦 Installation (For End Users)
+## 📦 Installation
 
 1. Download the latest pre-compiled `SonoraFX.mfx` from the Releases section.
 2. Copy `SonoraFX.mfx` to your Clickteam Fusion 2.5 installation directories:
@@ -97,7 +97,7 @@ Add these 6 events to your **Global Events** or **Frame Event Sheet**:
 
 ---
 
-## 💻 Building from Source (Developer Guide)
+## 💻 Building from Source
 
 ### Prerequisites
 - **Visual Studio 2022** with the **Desktop development with C++** workload installed.
