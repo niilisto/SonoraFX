@@ -25,7 +25,7 @@ SonoraFX has been fully ported to the **DarkEdif C++17 extension SDK**:
 ## 🌟 Key Features
 
 - **Smart Free Channel Allocation (`Channel 0`)**: Automatically assigns sound effects to the lowest available free channel (from 1 to 48) while leaving background music channels completely untouched.
-- **Organic Audio Humanization (Random Variance)**: Automatically rolls a dice using `std::rand()` to apply subtle volume and pitch variations every time a sound effect plays, removing robotic repetition.
+- **Random Variance**: Automatically rolls a dice using `std::rand()` to apply subtle volume and pitch variations every time a sound effect plays, removing robotic repetition.
 - **2D Spatial Audio**: Real-time euclidean distance calculation for volume attenuation (with custom Rolloff factor) and X-axis based stereo panning for perfect positional audio without heavy math loops.
 - **Pitch Sweeps & Wave LFOs**: Smooth frequency slides and pitch modulations with 7 wave shapes (*Sine, Triangle, Square, Sawtooth, Slide Up, Slide Down, Knockout*).
 - **Pitch Origin Safety (`GetFreqOriginPct`)**: Prevents sample frequency reset crashes when pitching up or down by anchoring calculations to the audio's original sample rate.
