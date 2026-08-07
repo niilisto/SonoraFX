@@ -1,0 +1,362 @@
+// Microsoft Developer Studio generated resource script.
+//
+#include "../Inc/Resource.h"
+#include "ccx.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#undef APSTUDIO_READONLY_SYMBOLS
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif
+
+#ifndef _MAC
+1 VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x0L
+#ifdef _DEBUG
+ FILEFLAGS 0x21L
+#else
+ FILEFLAGS 0x20L
+#endif
+ FILEOS 0x10001L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "Niilisto (Nihil)\0"
+            VALUE "FileDescription", "SonoraFX Extension\0"
+            VALUE "FileVersion", "1.00\0"
+            VALUE "InternalName", "SONORAFX\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "SonoraFX.mfx\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "SonoraFX\0"
+            VALUE "ProductVersion", "1, 0, 0, 0\0"
+            VALUE "SpecialBuild", "00000001\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+#endif
+
+KPX_MAGICNUMBER RCDATA MOVEABLE PURE
+BEGIN
+    0x2516, 0x5908
+END
+
+#if defined(APSTUDIO_INVOKED) || defined(EDITOR)
+#if defined(APSTUDIO_INVOKED)
+EXO_ICON$(EDITOR)   BITMAP MOVEABLE PURE "RES\\EXTICON.BMP"
+#else
+EXO_ICON            BITMAP MOVEABLE PURE "RES\\EXTICON.BMP"
+#endif
+#endif
+#if defined(APSTUDIO_INVOKED) || defined(EDITOR)
+#if defined(APSTUDIO_INVOKED)
+EXO_IMAGE$(EDITOR)  BITMAP MOVEABLE PURE "RES\\EXTIMG.BMP"
+#else
+EXO_IMAGE           BITMAP MOVEABLE PURE "RES\\EXTIMG.BMP"
+#endif
+#endif
+
+// ============================================================================
+// MENUS
+// ============================================================================
+
+#if defined(APSTUDIO_INVOKED) || defined(EDITOR)
+#if defined(APSTUDIO_INVOKED)
+MN_CONDITIONS$(EDITOR) MENU DISCARDABLE
+#else
+MN_CONDITIONS MENU DISCARDABLE
+#endif
+BEGIN
+    POPUP ""
+    BEGIN
+        POPUP "On Channel Command"
+        BEGIN
+            MENUITEM "On Play Command...",               IDMN_CND_ON_PLAY
+            MENUITEM "On Stop Command...",               IDMN_CND_ON_STOP
+            MENUITEM "On Pause Command...",              IDMN_CND_ON_PAUSE
+            MENUITEM "On Resume Command...",             IDMN_CND_ON_RESUME
+            MENUITEM "On Volume Change Command...",      IDMN_CND_ON_SET_VOLUME
+            MENUITEM "On Frequency Change Command...",   IDMN_CND_ON_SET_FREQUENCY
+            MENUITEM "On Position Change Command...",    IDMN_CND_ON_SET_POSITION
+            MENUITEM "On Pan Change Command...",         IDMN_CND_ON_SET_PAN
+            MENUITEM "On Fade Complete Command...",      IDMN_CND_ON_FADE_COMPLETE
+        END
+        POPUP "On Any Channel Command"
+        BEGIN
+            MENUITEM "On Any Play Command",              IDMN_CND_ON_ANY_PLAY
+            MENUITEM "On Any Stop Command",              IDMN_CND_ON_ANY_STOP
+            MENUITEM "On Any Pause Command",             IDMN_CND_ON_ANY_PAUSE
+            MENUITEM "On Any Resume Command",            IDMN_CND_ON_ANY_RESUME
+            MENUITEM "On Any Volume Change Command",     IDMN_CND_ON_ANY_SET_VOLUME
+            MENUITEM "On Any Frequency Change Command",  IDMN_CND_ON_ANY_SET_FREQUENCY
+            MENUITEM "On Any Position Change Command",   IDMN_CND_ON_ANY_SET_POSITION
+            MENUITEM "On Any Pan Change Command",        IDMN_CND_ON_ANY_SET_PAN
+            MENUITEM "On Any Fade Complete Command",     IDMN_CND_ON_ANY_FADE_COMPLETE
+        END
+        POPUP "State Checks"
+        BEGIN
+            MENUITEM "Is Channel Playing?",             IDMN_CND_IS_PLAYING
+            MENUITEM "Is Channel Paused?",              IDMN_CND_IS_PAUSED
+            MENUITEM "Is Channel Stopped?",             IDMN_CND_IS_STOPPED
+        END
+    END
+END
+#endif
+
+#if defined(APSTUDIO_INVOKED) || defined(EDITOR)
+#if defined(APSTUDIO_INVOKED)
+MN_ACTIONS$(EDITOR) MENU DISCARDABLE
+#else
+MN_ACTIONS MENU DISCARDABLE
+#endif
+BEGIN
+    POPUP ""
+    BEGIN
+        POPUP "Specific Channel"
+        BEGIN
+            POPUP "Playback"
+            BEGIN
+                MENUITEM "Play Audio...",                   IDMN_ACT_PLAY_AUDIO
+                MENUITEM "Stop Audio",                      IDMN_ACT_STOP_AUDIO
+                MENUITEM "Pause Audio",                     IDMN_ACT_PAUSE_AUDIO
+                MENUITEM "Resume Audio",                    IDMN_ACT_RESUME_AUDIO
+                MENUITEM "Queue Audio...",                  IDMN_ACT_QUEUE_AUDIO
+                MENUITEM "Enqueue Track...",                IDMN_ACT_ENQUEUE_TRACK
+                MENUITEM "Clear Playlist Queue",            IDMN_ACT_CLEAR_QUEUE
+                MENUITEM "Set Channel Stopped...",          IDMN_ACT_SET_CHANNEL_STOPPED
+            END
+            POPUP "Effects & Control"
+            BEGIN
+                MENUITEM "Set Volume...",                   IDMN_ACT_SET_VOLUME
+                MENUITEM "Set Frequency/Sweep...",          IDMN_ACT_SET_FREQUENCY
+                MENUITEM "Set Panning...",                  IDMN_ACT_SET_PAN
+                MENUITEM "Enable Tremolo...",               IDMN_ACT_ENABLE_TREMOLO
+                MENUITEM "Enable Volume LFO...",            IDMN_ACT_ENABLE_VOL_LFO
+                MENUITEM "Fade Channel...",                 IDMN_ACT_FADE_CHANNEL
+                MENUITEM "Set ADSR Envelope...",            IDMN_ACT_SET_ADSR
+                MENUITEM "Randomize Pitch...",              IDMN_ACT_RANDOMIZE_PITCH
+                MENUITEM "Crossfade Channels...",           IDMN_ACT_CROSSFADE
+                MENUITEM "Set Origin Frequency...",         IDMN_ACT_SET_ORIGIN_FREQUENCY
+            END
+        END
+        POPUP "All Channels"
+        BEGIN
+            POPUP "Playback"
+            BEGIN
+                MENUITEM "Stop All Channels",               IDMN_ACT_STOP_ALL
+                MENUITEM "Pause All Channels",              IDMN_ACT_PAUSE_ALL
+                MENUITEM "Resume All Channels",             IDMN_ACT_RESUME_ALL
+            END
+            POPUP "Effects & Control"
+            BEGIN
+                MENUITEM "Set All Volumes...",              IDMN_ACT_SET_ALL_VOLUMES
+                MENUITEM "Set All Frequency Sweeps...",     IDMN_ACT_SET_ALL_FREQUENCY_SWEEPS
+                MENUITEM "Set All Panning...",              IDMN_ACT_SET_ALL_PANNING
+                MENUITEM "Enable All Tremolos...",          IDMN_ACT_ENABLE_ALL_TREMOLOS
+                MENUITEM "Fade All Channels...",            IDMN_ACT_FADE_ALL_CHANNELS
+                MENUITEM "Enable All Volume LFOs...",       IDMN_ACT_ENABLE_ALL_VOLUME_LFOS
+                MENUITEM "Set All ADSR Envelopes...",       IDMN_ACT_SET_ALL_ADSR_ENVELOPES
+                MENUITEM "Randomize All Pitches...",        IDMN_ACT_RANDOMIZE_ALL_PITCHES
+                MENUITEM "Set All Origin Frequencies...",   IDMN_ACT_SET_ALL_ORIGIN_FREQUENCIES
+            END
+        END
+    END
+END
+#endif
+
+#if defined(APSTUDIO_INVOKED) || defined(EDITOR)
+#if defined(APSTUDIO_INVOKED)
+MN_EXPRESSIONS$(EDITOR) MENU DISCARDABLE
+#else
+MN_EXPRESSIONS MENU DISCARDABLE
+#endif
+BEGIN
+    POPUP ""
+    BEGIN
+        POPUP "Status"
+        BEGIN
+            MENUITEM "Get Playing Sound Name",          IDMN_EXP_GET_PLAY_SOUND_NAME
+            MENUITEM "Get Playing Loops Mode",          IDMN_EXP_GET_PLAY_LOOPS
+            MENUITEM "Get Managed Volume",              IDMN_EXP_GET_VOLUME
+            MENUITEM "Get Managed Frequency",           IDMN_EXP_GET_FREQUENCY
+            MENUITEM "Get Managed Position",            IDMN_EXP_GET_POSITION
+            MENUITEM "Get Managed Panning",             IDMN_EXP_GET_PAN
+            MENUITEM "Get Play State",                  IDMN_EXP_GET_PLAY_STATE
+            MENUITEM "Get Custom Timer",                IDMN_EXP_GET_CUSTOM_TIMER
+            MENUITEM "Get Freq Origin",                  IDMN_EXP_GET_FREQ_ORIGIN
+            MENUITEM "Get Freq Origin %...",              IDMN_EXP_GET_FREQ_ORIGIN_PCT
+        END
+        POPUP "Triggered Info"
+        BEGIN
+            MENUITEM "Get Triggered Channel",           IDMN_EXP_GET_TRIGGERED_CHANNEL
+            MENUITEM "Get Triggered Sound Name",        IDMN_EXP_GET_TRIGGERED_NAME
+            MENUITEM "Get Triggered Volume",            IDMN_EXP_GET_TRIGGERED_VOLUME
+            MENUITEM "Get Triggered Frequency",         IDMN_EXP_GET_TRIGGERED_FREQUENCY
+            MENUITEM "Get Triggered Panning",           IDMN_EXP_GET_TRIGGERED_PAN
+            MENUITEM "Get Triggered Position",          IDMN_EXP_GET_TRIGGERED_POSITION
+            MENUITEM "Get Triggered Loops",             IDMN_EXP_GET_TRIGGERED_LOOPS
+            MENUITEM "Get Triggered Freq Origin",        IDMN_EXP_GET_TRIGGERED_FREQ_ORIGIN
+        END
+    END
+END
+#endif
+
+// ============================================================================
+// STRING TABLES
+// ============================================================================
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    KPX_MARK    "MF2"
+    KPX_NAME    "SonoraFX"
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    IDST_OBJNAME    "SonoraFX"
+    IDST_AUTHOR     "Niilisto (Nihil)"
+    IDST_COPYRIGHT  "Copyright (C) 2026"
+    IDST_COMMENT    "C++ sound channel state machine wrapper for Clickteam native audio player."
+    IDST_HTTP       "https://github.com/niilisto/"
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    M_CND_ON_PLAY           "%o: On Play Command for Channel %0"
+    M_CND_ON_STOP           "%o: On Stop Command for Channel %0"
+    M_CND_ON_PAUSE          "%o: On Pause Command for Channel %0"
+    M_CND_ON_RESUME         "%o: On Resume Command for Channel %0"
+    M_CND_ON_SET_VOLUME     "%o: On Set Volume Command for Channel %0"
+    M_CND_ON_SET_FREQUENCY  "%o: On Set Frequency Command for Channel %0"
+    M_CND_ON_SET_POSITION   "%o: On Set Position Command for Channel %0"
+    M_CND_ON_SET_PAN        "%o: On Set Pan Command for Channel %0"
+    M_CND_IS_PLAYING        "%o: Is Channel %0 Playing?"
+    M_CND_IS_PAUSED         "%o: Is Channel %0 Paused?"
+    M_CND_IS_STOPPED        "%o: Is Channel %0 Stopped?"
+    M_CND_ON_FADE_COMPLETE  "%o: On Fade Complete Command for Channel %0"
+    M_CND_ON_ANY_PLAY       "%o: On Any Play Command"
+    M_CND_ON_ANY_STOP       "%o: On Any Stop Command"
+    M_CND_ON_ANY_PAUSE      "%o: On Any Pause Command"
+    M_CND_ON_ANY_RESUME     "%o: On Any Resume Command"
+    M_CND_ON_ANY_SET_VOLUME "%o: On Any Volume Change Command"
+    M_CND_ON_ANY_SET_FREQUENCY "%o: On Any Frequency Change Command"
+    M_CND_ON_ANY_SET_POSITION "%o: On Any Position Change Command"
+    M_CND_ON_ANY_SET_PAN    "%o: On Any Pan Change Command"
+    M_CND_ON_ANY_FADE_COMPLETE "%o: On Any Fade Complete Command"
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    M_CND_P_CHANNEL "Audio Channel ID (1..48, 0 for free)"
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    M_ACT_PLAY_AUDIO        "%o: Play Ch %0: %1 (Loops=%2 Start=%3 End=%4 Vol=%5 Freq=%6)"
+    M_ACT_STOP_AUDIO        "%o: Stop Ch %0"
+    M_ACT_PAUSE_AUDIO       "%o: Pause Ch %0"
+    M_ACT_RESUME_AUDIO      "%o: Resume Ch %0"
+    M_ACT_QUEUE_AUDIO       "%o: Queue Ch %0: %1 (FadeOut=%2, FadeIn=%3)"
+    M_ACT_SET_VOLUME        "%o: Set Ch %0 Managed Vol to %1"
+    M_ACT_SET_FREQUENCY     "%o: Set Ch %0 Freq Sweep (Target=%1 Speed=%2 Direction=%3)"
+    M_ACT_SET_PAN           "%o: Set Ch %0 Managed Panning to %1"
+    M_ACT_ENABLE_TREMOLO    "%o: Enable Ch %0 Tremolo LFO (Rate=%1 Depth=%2)"
+    M_ACT_FADE_CHANNEL      "%o: Fade Ch %0 (TargetVol=%1 Speed=%2 State=%3)"
+    M_ACT_ENQUEUE_TRACK     "%o: Playlist Ch %0: Add Track %1"
+    M_ACT_CLEAR_QUEUE       "%o: Playlist Ch %0: Clear Queue"
+    M_ACT_ENABLE_VOL_LFO    "%o: Enable Ch %0 Volume LFO (Rate=%1 Depth=%2)"
+    M_ACT_SET_ADSR          "%o: Set Ch %0 ADSR (A=%1 D=%2 S=%3 R=%4)"
+    M_ACT_RANDOMIZE_PITCH   "%o: Randomize Ch %0 Pitch (Range=%1)"
+    M_ACT_CROSSFADE         "%o: Crossfade Ch %0 to Ch %1 (Speed=%2)"
+    M_ACT_SET_ORIGIN_FREQUENCY "%o: Set Ch %0 Freq Origin to %1 Hz"
+    M_ACT_STOP_ALL          "%o: Stop All Channels"
+    M_ACT_PAUSE_ALL         "%o: Pause All Channels"
+    M_ACT_RESUME_ALL        "%o: Resume All Channels"
+    M_ACT_SET_ALL_VOLUMES   "%o: Set All Volumes to %0"
+    M_ACT_SET_ALL_FREQUENCY_SWEEPS "%o: Set All Freq Sweeps (Target=%0 Speed=%1 Direction=%2)"
+    M_ACT_SET_ALL_PANNING   "%o: Set All Panning to %0"
+    M_ACT_ENABLE_ALL_TREMOLOS "%o: Enable All Tremolo LFOs (Rate=%0 Depth=%1)"
+    M_ACT_FADE_ALL_CHANNELS "%o: Fade All Channels (TargetVol=%0 Speed=%1 State=%2)"
+    M_ACT_ENABLE_ALL_VOLUME_LFOS "%o: Enable All Volume LFOs (Rate=%0 Depth=%1)"
+    M_ACT_SET_ALL_ADSR_ENVELOPES "%o: Set All ADSRs (A=%0 D=%1 S=%2 R=%3)"
+    M_ACT_RANDOMIZE_ALL_PITCHES "%o: Randomize All Pitches (Range=%0)"
+    M_ACT_SET_ALL_ORIGIN_FREQUENCIES "%o: Set All Freq Origins to %0 Hz"
+    M_ACT_SET_CHANNEL_STOPPED "%o: Set Ch %0 Stopped Natively"
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    M_ACT_P_CHANNEL         "Audio Channel ID (1..48, 0 for free)"
+    M_ACT_P_FILENAME        "Audio Sample Name (e.g. ""MySong.ogg"" or ""SoundEffect"")"
+    M_ACT_P_VOLUME          "Volume Level (0 = Silent, 100 = Full)"
+    M_ACT_P_FREQUENCY       "Frequency / Hz (0 = play at native sample rate. Use Set Freq Origin in the bridge to save it. e.g. 22050 = half, 44100 = normal, 88200 = double)"
+    M_ACT_P_PAN             "Panning (-100 = Left, 0 = Center, 100 = Right)"
+    M_ACT_P_POSITION        "Playback Position in ms"
+    M_ACT_P_LOOP_START      "Loop Start in ms"
+    M_ACT_P_LOOP_END        "Loop End in ms (0 = end)"
+    M_ACT_P_LOOP_FLAG       "Loop Flag (0 = Loop Infinitely, 1 = Play Once, 2 = Play Twice, etc.)"
+    M_ACT_P_FADE_SPEED      "Fade Volume units per frame (e.g. 2)"
+    M_ACT_P_FADE_STATE      "Fade state (0=No Fade, 1=Fade In, -1=Fade Out)"
+    M_ACT_P_RATE            "Modulation Rate / speed (e.g. 4)"
+    M_ACT_P_DEPTH           "Modulation Depth / intensity (0..100)"
+    M_ACT_P_FREQ_SPEED      "Frequency shift speed (e.g. 200)"
+    M_ACT_P_FREQ_DIRECTION  "Frequency Direction (0=Normal, 1=Up, -1=Down, 2=Wavy, 3=Knockout, 4=Triangle, 5=Square, 6=Sawtooth)"
+    M_ACT_P_ATTACK          "ADSR Attack duration in frames (0 = instant)"
+    M_ACT_P_DECAY           "ADSR Decay duration in frames (0 = instant)"
+    M_ACT_P_SUSTAIN         "ADSR Sustain volume level (0..100)"
+    M_ACT_P_RELEASE         "ADSR Release duration in frames (0 = instant)"
+    M_ACT_P_RANGE           "Pitch Randomization Range in Hz (e.g. 500)"
+    M_ACT_P_FROM_CHANNEL    "Source Audio Channel ID (1..48, -1 for all, 0 for free)"
+    M_ACT_P_TO_CHANNEL      "Target Audio Channel ID (1..48, -1 for all, 0 for free)"
+    M_ACT_P_ORIGIN_FREQ     "Native Frequency / Hz (e.g. 22050 or ChannelFreq(Ch))"
+    M_ACT_P_FADE_OUT_SPEED  "Fade Out Speed in volume units per frame (e.g. 2.0)"
+    M_ACT_P_FADE_IN_SPEED   "Fade In Speed in volume units per frame (e.g. 2.0)"
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    M_EXP_GET_PLAY_SOUND_NAME           "GetPlaySoundName$("
+    M_EXP_GET_PLAY_LOOPS                "GetPlayLoops("
+    M_EXP_GET_VOLUME                    "GetVolume("
+    M_EXP_GET_FREQUENCY                 "GetFrequency("
+    M_EXP_GET_POSITION                  "GetPosition("
+    M_EXP_GET_PAN                       "GetPan("
+    M_EXP_GET_TRIGGERED_CHANNEL         "TriggeredChannel("
+    M_EXP_GET_TRIGGERED_NAME            "TriggeredName$("
+    M_EXP_GET_TRIGGERED_VOLUME          "TriggeredVolume("
+    M_EXP_GET_TRIGGERED_FREQUENCY       "TriggeredFrequency("
+    M_EXP_GET_TRIGGERED_PAN             "TriggeredPan("
+    M_EXP_GET_TRIGGERED_POSITION        "TriggeredPosition("
+    M_EXP_GET_TRIGGERED_LOOPS           "TriggeredLoops("
+    M_EXP_GET_PLAY_STATE                "GetPlayState("
+    M_EXP_GET_CUSTOM_TIMER              "GetCustomTimer("
+    M_EXP_GET_FREQ_ORIGIN               "GetFreqOrigin("
+    M_EXP_GET_TRIGGERED_FREQ_ORIGIN     "TriggeredFreqOrigin("
+    M_EXP_GET_FREQ_ORIGIN_PCT           "GetFreqOriginPct("
+END
+
+STRINGTABLE DISCARDABLE
+BEGIN
+    M_EXP_P_CHANNEL "Audio Channel ID (1..48, 0 for free)"
+    M_EXP_P_PERCENTAGE "Percentage (e.g. 50 = half speed, 100 = original, 200 = double speed)"
+END
+
+#endif

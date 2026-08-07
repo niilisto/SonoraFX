@@ -1,0 +1,619 @@
+{
+	"Identifier": "AMGR",
+	"Dependencies": [ "" ],
+	"UK English": {
+		"About": {
+			"Name": "SonoraFX",
+			"Author": "Niilisto (Nihil)",
+			"Comment": "C++ sound channel state machine wrapper for Clickteam native audio player.",
+			"Copyright": "Copyright \u00A9 2026",
+			"Help": "Help/SonoraFX/index.html",
+			"URL": "https://github.com/niilisto/"
+		},
+		"ActionMenu": [
+			[ "Specific Channel",
+				[ "Playback",
+					[ 0, "Play Audio..." ],
+					[ 30, "Play with Random Variance..." ],
+					[ 1, "Stop Audio" ],
+					[ 2, "Pause Audio" ],
+					[ 3, "Resume Audio" ],
+					[ 4, "Queue Audio..." ],
+					[ 10, "Enqueue Track..." ],
+					[ 11, "Clear Playlist Queue" ],
+					[ 29, "Set Channel Stopped..." ]
+				],
+				[ "Spatial / Positioning",
+					[ 31, "Update Spatial Audio 2D..." ]
+				],
+				[ "Effects / Control",
+					[ 5, "Set Volume..." ],
+					[ 6, "Set Frequency/Sweep..." ],
+					[ 7, "Set Panning..." ],
+					[ 8, "Enable Tremolo..." ],
+					[ 12, "Enable Volume LFO..." ],
+					[ 9, "Fade Channel..." ],
+					[ 13, "Set ADSR Envelope..." ],
+					[ 14, "Randomize Pitch..." ],
+					[ 15, "Crossfade Channels..." ],
+					[ 32, "Crossfade Sample..." ],
+					[ 33, "Sequential Transition..." ],
+					[ 16, "Set Origin Frequency..." ]
+				]
+			],
+			[ "All Channels",
+				[ "Playback",
+					[ 17, "Stop All Channels" ],
+					[ 18, "Pause All Channels" ],
+					[ 19, "Resume All Channels" ]
+				],
+				[ "Effects / Control",
+					[ 20, "Set All Volumes..." ],
+					[ 21, "Set All Frequency Sweeps..." ],
+					[ 22, "Set All Panning..." ],
+					[ 23, "Enable All Tremolos..." ],
+					[ 24, "Fade All Channels..." ],
+					[ 25, "Enable All Volume LFOs..." ],
+					[ 26, "Set All ADSR Envelopes..." ],
+					[ 27, "Randomize All Pitches..." ],
+					[ 28, "Set All Origin Frequencies..." ]
+				]
+			]
+		],
+		"ConditionMenu": [
+			[ "On Channel Command",
+				[ 0, "On Play Command..." ],
+				[ 1, "On Stop Command..." ],
+				[ 2, "On Pause Command..." ],
+				[ 3, "On Resume Command..." ],
+				[ 4, "On Volume Change Command..." ],
+				[ 5, "On Frequency Change Command..." ],
+				[ 6, "On Position Change Command..." ],
+				[ 7, "On Pan Change Command..." ],
+				[ 11, "On Fade Complete Command..." ]
+			],
+			[ "On Any Channel Command",
+				[ 12, "On Any Play Command" ],
+				[ 13, "On Any Stop Command" ],
+				[ 14, "On Any Pause Command" ],
+				[ 15, "On Any Resume Command" ],
+				[ 16, "On Any Volume Change Command" ],
+				[ 17, "On Any Frequency Change Command" ],
+				[ 18, "On Any Position Change Command" ],
+				[ 19, "On Any Pan Change Command" ],
+				[ 20, "On Any Fade Complete Command" ]
+			],
+			[ "State Checks",
+				[ 8, "Is Channel Playing?" ],
+				[ 9, "Is Channel Paused?" ],
+				[ 10, "Is Channel Stopped?" ]
+			]
+		],
+		"ExpressionMenu": [
+			[ "Status",
+				[ 0, "Get Playing Sound Name" ],
+				[ 1, "Get Playing Loops Mode" ],
+				[ 2, "Get Managed Volume" ],
+				[ 3, "Get Managed Frequency" ],
+				[ 4, "Get Managed Position" ],
+				[ 5, "Get Managed Panning" ],
+				[ 13, "Get Play State" ],
+				[ 14, "Get Custom Timer" ],
+				[ 15, "Get Freq Origin" ],
+				[ 17, "Get Freq Origin %..." ]
+			],
+			[ "Triggered Info",
+				[ 6, "Get Triggered Channel" ],
+				[ 7, "Get Triggered Sound Name" ],
+				[ 8, "Get Triggered Volume" ],
+				[ 9, "Get Triggered Frequency" ],
+				[ 10, "Get Triggered Panning" ],
+				[ 11, "Get Triggered Position" ],
+				[ 12, "Get Triggered Loops" ],
+				[ 16, "Get Triggered Freq Origin" ]
+			]
+		],
+		"Actions": [
+			{
+				"Title": "%o: Play Ch %0: %1 (Loops=%2 Start=%3 End=%4 Vol=%5 Freq=%6)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Text", "Audio Sample Name (e.g. \"MySong.ogg\" or \"SoundEffect\")" ],
+					[ "Integer", "Loop Flag (0 = Loop Infinitely, 1 = Play Once, 2 = Play Twice, etc.)" ],
+					[ "Integer", "Playback Position in ms" ],
+					[ "Integer", "Loop End in ms (0 = end)" ],
+					[ "Float", "Volume Level (0 = Silent, 100 = Full)" ],
+					[ "Float", "Frequency / Hz (0 = play at native sample rate. Use Set Freq Origin in the bridge to save it. e.g. 22050 = half, 44100 = normal, 88200 = double)" ]
+				]
+			},
+			{
+				"Title": "%o: Stop Ch %0",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Pause Ch %0",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Resume Ch %0",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Queue Ch %0: %1 (FadeOut=%2, FadeIn=%3)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Text", "Audio Sample Name (e.g. \"MySong.ogg\" or \"SoundEffect\")" ],
+					[ "Float", "Fade Out Speed in volume units per frame (e.g. 2.0)" ],
+					[ "Float", "Fade In Speed in volume units per frame (e.g. 2.0)" ]
+				]
+			},
+			{
+				"Title": "%o: Set Ch %0 Managed Vol to %1",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Volume Level (0 = Silent, 100 = Full)" ]
+				]
+			},
+			{
+				"Title": "%o: Set Ch %0 Freq Sweep (Target=%1 Speed=%2 Direction=%3)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Frequency / Hz" ],
+					[ "Float", "Frequency shift speed (e.g. 200)" ],
+					[ "Integer", "Frequency Direction (0=Normal, 1=Up, -1=Down, 2=Wavy, 3=Knockout, 4=Triangle, 5=Square, 6=Sawtooth)" ]
+				]
+			},
+			{
+				"Title": "%o: Set Ch %0 Managed Panning to %1",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Panning (-100 = Left, 0 = Center, 100 = Right)" ]
+				]
+			},
+			{
+				"Title": "%o: Enable Ch %0 Tremolo LFO (Rate=%1 Depth=%2)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Modulation Rate / speed (e.g. 4)" ],
+					[ "Float", "Modulation Depth / intensity (0..100)" ]
+				]
+			},
+			{
+				"Title": "%o: Fade Ch %0 (TargetVol=%1 Speed=%2 State=%3)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Volume Level (0 = Silent, 100 = Full)" ],
+					[ "Float", "Fade Volume units per frame (e.g. 2)" ],
+					[ "Integer", "Fade state (0=No Fade, 1=Fade In, -1=Fade Out)" ]
+				]
+			},
+			{
+				"Title": "%o: Playlist Ch %0: Add Track %1",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Text", "Audio Sample Name (e.g. \"MySong.ogg\" or \"SoundEffect\")" ]
+				]
+			},
+			{
+				"Title": "%o: Playlist Ch %0: Clear Queue",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Enable Ch %0 Volume LFO (Rate=%1 Depth=%2)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Modulation Rate / speed (e.g. 4)" ],
+					[ "Float", "Modulation Depth / intensity (0..100)" ]
+				]
+			},
+			{
+				"Title": "%o: Set Ch %0 ADSR (A=%1 D=%2 S=%3 R=%4)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "ADSR Attack duration in frames (0 = instant)" ],
+					[ "Float", "ADSR Decay duration in frames (0 = instant)" ],
+					[ "Float", "ADSR Sustain volume level (0..100)" ],
+					[ "Float", "ADSR Release duration in frames (0 = instant)" ]
+				]
+			},
+			{
+				"Title": "%o: Randomize Ch %0 Pitch (Range=%1)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Pitch Randomization Range in Hz (e.g. 500)" ]
+				]
+			},
+			{
+				"Title": "%o: Crossfade Channels Ch %0 to Ch %1 (Speed=%2)",
+				"Parameters": [
+					[ "Integer", "Source Audio Channel ID (1..48, 0 for free)" ],
+					[ "Integer", "Target Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Fade Volume units per frame (e.g. 2)" ]
+				]
+			},
+			{
+				"Title": "%o: Set Ch %0 Freq Origin to %1 Hz",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Native Frequency / Hz (e.g. 22050 or ChannelFreq(Ch))" ]
+				]
+			},
+			{
+				"Title": "%o: Stop All Channels",
+				"Parameters": []
+			},
+			{
+				"Title": "%o: Pause All Channels",
+				"Parameters": []
+			},
+			{
+				"Title": "%o: Resume All Channels",
+				"Parameters": []
+			},
+			{
+				"Title": "%o: Set All Volumes to %0",
+				"Parameters": [
+					[ "Float", "Volume Level (0 = Silent, 100 = Full)" ]
+				]
+			},
+			{
+				"Title": "%o: Set All Freq Sweeps (Target=%0 Speed=%1 Direction=%2)",
+				"Parameters": [
+					[ "Float", "Frequency / Hz" ],
+					[ "Float", "Frequency shift speed (e.g. 200)" ],
+					[ "Integer", "Frequency Direction (0=Normal, 1=Up, -1=Down, 2=Wavy, 3=Knockout, 4=Triangle, 5=Square, 6=Sawtooth)" ]
+				]
+			},
+			{
+				"Title": "%o: Set All Panning to %0",
+				"Parameters": [
+					[ "Float", "Panning (-100 = Left, 0 = Center, 100 = Right)" ]
+				]
+			},
+			{
+				"Title": "%o: Enable All Tremolo LFOs (Rate=%0 Depth=%1)",
+				"Parameters": [
+					[ "Float", "Modulation Rate / speed (e.g. 4)" ],
+					[ "Float", "Modulation Depth / intensity (0..100)" ]
+				]
+			},
+			{
+				"Title": "%o: Fade All Channels (TargetVol=%0 Speed=%1 State=%2)",
+				"Parameters": [
+					[ "Float", "Volume Level (0 = Silent, 100 = Full)" ],
+					[ "Float", "Fade Volume units per frame (e.g. 2)" ],
+					[ "Integer", "Fade state (0=No Fade, 1=Fade In, -1=Fade Out)" ]
+				]
+			},
+			{
+				"Title": "%o: Enable All Volume LFOs (Rate=%0 Depth=%1)",
+				"Parameters": [
+					[ "Float", "Modulation Rate / speed (e.g. 4)" ],
+					[ "Float", "Modulation Depth / intensity (0..100)" ]
+				]
+			},
+			{
+				"Title": "%o: Set All ADSRs (A=%0 D=%1 S=%2 R=%3)",
+				"Parameters": [
+					[ "Float", "ADSR Attack duration in frames (0 = instant)" ],
+					[ "Float", "ADSR Decay duration in frames (0 = instant)" ],
+					[ "Float", "ADSR Sustain volume level (0..100)" ],
+					[ "Float", "ADSR Release duration in frames (0 = instant)" ]
+				]
+			},
+			{
+				"Title": "%o: Randomize All Pitches (Range=%0)",
+				"Parameters": [
+					[ "Float", "Pitch Randomization Range in Hz (e.g. 500)" ]
+				]
+			},
+			{
+				"Title": "%o: Set All Freq Origins to %0 Hz",
+				"Parameters": [
+					[ "Float", "Native Frequency / Hz (e.g. 22050 or ChannelFreq(Ch))" ]
+				]
+			},
+			{
+				"Title": "%o: Set Ch %0 Stopped Natively",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Play Random Variance Ch %0: %1 (BaseVol=%5\u00B1%6 BaseFreq=%7\u00B1%8)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Text", "Audio Sample Name (e.g. \"MySong.ogg\")" ],
+					[ "Integer", "Loop Flag (0 = Loop Infinitely, 1 = Play Once, 2 = Play Twice)" ],
+					[ "Integer", "Playback Position in ms" ],
+					[ "Integer", "Loop End in ms (0 = end)" ],
+					[ "Float", "Base Volume Level (0..100)" ],
+					[ "Float", "Volume Variance (+/- offset, e.g. 10.0)" ],
+					[ "Float", "Base Frequency / Hz (e.g. 44100)" ],
+					[ "Float", "Frequency Variance (+/- offset in Hz, e.g. 2000.0)" ]
+				]
+			},
+			{
+				"Title": "%o: Update 2D Spatial Audio Ch %0 (SrcXY=%1,%2 LsnrXY=%3,%4 MaxDist=%5 Rolloff=%6)",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48)" ],
+					[ "Float", "Sound Source X Coordinate" ],
+					[ "Float", "Sound Source Y Coordinate" ],
+					[ "Float", "Listener (Camera/Player) X Coordinate" ],
+					[ "Float", "Listener (Camera/Player) Y Coordinate" ],
+					[ "Float", "Maximum Distance before mute (e.g. 1000)" ],
+					[ "Float", "Volume Rolloff Factor (1.0 = linear, 2.0 = steep curve)" ]
+				]
+			},
+			{
+				"Title": "%o: Crossfade Sample Ch %0 to Ch %3: %1 (Speed=%2)",
+				"Parameters": [
+					[ "Integer", "Source Audio Channel ID (1..48, 0 for free)" ],
+					[ "Text", "Next Audio Sample Name (e.g. \"MySong.ogg\")" ],
+					[ "Float", "Fade Volume units per frame (e.g. 2)" ],
+					[ "Integer", "Target Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Sequential Transition Ch %0 to Ch %3: %1 (OutSpeed=%2 InSpeed=%4)",
+				"Parameters": [
+					[ "Integer", "Source Audio Channel ID (1..48, 0 for free)" ],
+					[ "Text", "Next Audio Sample Name (e.g. \"MySong.ogg\")" ],
+					[ "Float", "Fade Out Speed (e.g. 2)" ],
+					[ "Integer", "Target Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Fade In Speed (e.g. 2)" ]
+				]
+			}
+		],
+		"Conditions": [
+			{
+				"Title": "%o: On Play Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Stop Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Pause Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Resume Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Set Volume Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Set Frequency Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Set Position Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Set Pan Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Is Channel %0 Playing?",
+				"Triggered": false,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Is Channel %0 Paused?",
+				"Triggered": false,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: Is Channel %0 Stopped?",
+				"Triggered": false,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Fade Complete Command for Channel %0",
+				"Triggered": true,
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "%o: On Any Play Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Stop Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Pause Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Resume Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Volume Change Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Frequency Change Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Position Change Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Pan Change Command",
+				"Triggered": true,
+				"Parameters": []
+			},
+			{
+				"Title": "%o: On Any Fade Complete Command",
+				"Triggered": true,
+				"Parameters": []
+			}
+		],
+		"Expressions": [
+			{
+				"Title": "GetPlaySoundName$(",
+				"Returns": "String",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "GetPlayLoops(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "GetVolume(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "GetFrequency(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "GetPosition(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "GetPan(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "TriggeredChannel(",
+				"Returns": "Integer",
+				"Parameters": []
+			},
+			{
+				"Title": "TriggeredName$(",
+				"Returns": "String",
+				"Parameters": []
+			},
+			{
+				"Title": "TriggeredVolume(",
+				"Returns": "Float",
+				"Parameters": []
+			},
+			{
+				"Title": "TriggeredFrequency(",
+				"Returns": "Float",
+				"Parameters": []
+			},
+			{
+				"Title": "TriggeredPan(",
+				"Returns": "Float",
+				"Parameters": []
+			},
+			{
+				"Title": "TriggeredPosition(",
+				"Returns": "Integer",
+				"Parameters": []
+			},
+			{
+				"Title": "TriggeredLoops(",
+				"Returns": "Integer",
+				"Parameters": []
+			},
+			{
+				"Title": "GetPlayState(",
+				"Returns": "Integer",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "GetCustomTimer(",
+				"Returns": "Float",
+				"Parameters": []
+			},
+			{
+				"Title": "GetFreqOrigin(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ]
+				]
+			},
+			{
+				"Title": "TriggeredFreqOrigin(",
+				"Returns": "Float",
+				"Parameters": []
+			},
+			{
+				"Title": "GetFreqOriginPct(",
+				"Returns": "Float",
+				"Parameters": [
+					[ "Integer", "Audio Channel ID (1..48, 0 for free)" ],
+					[ "Float", "Percentage (e.g. 50 = half speed, 100 = original, 200 = double speed)" ]
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,51 @@
+#include "Resource.h"
+#include <windows.h>
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+1 VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0
+#endif
+ FILEOS VOS__WINDOWS32
+ FILETYPE VFT_DLL
+ FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904e4"
+		BEGIN
+			VALUE "ProductName", "SonoraFX\0"
+			VALUE "CompanyName", "Niilisto (Nihil)\0"
+			VALUE "FileDescription", "SonoraFX Extension\0"
+			VALUE "FileVersion", "1.00\0"
+			VALUE "InternalName", "SonoraFX.mfx\0"
+			VALUE "LegalCopyright", "Copyright \xA9 2026 Niilisto\0"
+			VALUE "OriginalFilename", "SonoraFX.mfx\0"
+			VALUE "ProductVersion", "Build 1\0"
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 1252
+	END
+END
+
+KPX_MAGICNUMBER RCDATA
+BEGIN
+	0x2516, 0x5908
+END
+
+STRINGTABLE
+BEGIN
+	1                "MF2"
+END
+
+IDR_EDIF_ICON	Edif	"Icon.png"
+IDR_EDIF_JSON	Edif	"DarkExt.json"

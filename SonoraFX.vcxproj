@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{89C1F8C9-2C5E-4B02-86C4-1B75EFBE6444}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SonoraFX</RootNamespace>
+    <ProjectName>SonoraFX</ProjectName>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetExt>.mfx</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Release\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <TargetExt>.mfx</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SONORAFX_EXPORTS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;STRICT;EditorBuild=1;FUSION_2_0_DRAWING_ONLY=1;DARKEDIF_DISPLAY_TYPE=0;PROJECT_NAME="SonoraFX";PROJECT_TARGET_NAME="SonoraFX";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Inc;$(ProjectDir)..\DarkEdifRepo\MMF2SDK_Unicode\Inc;$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc;$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc\Shared;$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc\Windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SONORAFX_EXPORTS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;STRICT;EditorBuild=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>mmfs2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\DarkEdifRepo\DarkEdif\Lib\Windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SONORAFX_EXPORTS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;STRICT;EditorBuild=1;FUSION_2_0_DRAWING_ONLY=1;DARKEDIF_DISPLAY_TYPE=0;PROJECT_NAME="SonoraFX";PROJECT_TARGET_NAME="SonoraFX";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Inc;$(ProjectDir)..\DarkEdifRepo\MMF2SDK_Unicode\Inc;$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc;$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc\Shared;$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc\Windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SONORAFX_EXPORTS;UNICODE;_UNICODE;WIN32_LEAN_AND_MEAN;NOMINMAX;STRICT;EditorBuild=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\DarkEdifRepo\DarkEdif\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>mmfs2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\DarkEdifRepo\DarkEdif\Lib\Windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist "$(ProjectDir)ToInst\" rmdir /s /q "$(ProjectDir)ToInst\"
+mkdir "$(ProjectDir)ToInst\Extensions\Unicode\"
+mkdir "$(ProjectDir)ToInst\Data\Runtime\Unicode\"
+mkdir "$(ProjectDir)ToInst\Help\SonoraFX\"
+mkdir "$(ProjectDir)ToInst\Examples\SonoraFX\"
+mkdir "$(ProjectDir)ToInst\Data\Runtime\Html5\"
+xcopy /Y "$(ProjectDir)Release\SonoraFX.mfx" "$(ProjectDir)ToInst\Extensions\Unicode\"
+xcopy /Y "$(ProjectDir)Release\SonoraFX.mfx" "$(ProjectDir)ToInst\Data\Runtime\Unicode\"
+xcopy /Y /E "$(ProjectDir)Help\Htm\*" "$(ProjectDir)ToInst\Help\SonoraFX\" 2&gt;nul
+xcopy /Y /E "$(ProjectDir)Examples\SonoraFX\*" "$(ProjectDir)ToInst\Examples\SonoraFX\" 2&gt;nul
+xcopy /Y "$(ProjectDir)SDKs\html\CRunSonoraFX.js" "$(ProjectDir)ToInst\Data\Runtime\Html5\"
+</Command>
+      <Message>Building ToInst package natively via Batch...</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Common.hpp" />
+    <ClInclude Include="Extension.hpp" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Src\AudioManagerState.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Actions.cpp" />
+    <ClCompile Include="Conditions.cpp" />
+    <ClCompile Include="Edittime.cpp" />
+    <ClCompile Include="Expressions.cpp" />
+    <ClCompile Include="Extension.cpp" />
+    <ClCompile Include="Runtime.cpp" />
+    <ClCompile Include="Src\AudioManagerState.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\DarkEdif.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\Edif.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\Edif.General.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\Edif.Runtime.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\json.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\ObjectSelection.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Shared\SurfaceMultiPlat.cpp" />
+    <ClCompile Include="..\DarkEdifRepo\DarkEdif\Lib\Windows\Edif.Edittime.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ext.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DarkExt.json" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>SonoraFX - Actions Reference</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #333; line-height: 1.6; }
+    h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 5px; }
+    h3 { color: #222; margin-top: 20px; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
+    ul { margin-left: 20px; }
+    li { margin-bottom: 12px; }
+    code { background: #f4f4f4; padding: 2px 5px; font-size: 13px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h2>SonoraFX - Actions Guide</h2>
+
+  <h3>1. Specific Channel Actions (Channel 1 to 48, or 0 for Free Channel)</h3>
+  <ul>
+    <li><b>Play Audio (Ch, File, Loop, Start, End, Vol, Freq):</b> Requests audio playback. Set <code>Ch = 0</code> to automatically pick the lowest available free channel without interrupting background music.
+      <br><i>Loop Flag:</i> <code>0</code> = Infinite Loop (BGM), <code>1</code> = Play Once (SFX), <code>N</code> = Play N times.
+    </li>
+    <li><b>Stop / Pause / Resume Audio (Ch):</b> Controls playback state for a specific channel.</li>
+    <li><b>Set Volume (Ch, Volume):</b> Sets channel volume (0 to 100).</li>
+    <li><b>Set Frequency / Sweep (Ch, TargetFreq, Speed, Direction):</b> Adjusts pitch or starts a frequency sweep / LFO.
+      <br><i>Direction Modes:</i> <code>0</code> = Return to origin, <code>1</code> = Slide Up, <code>-1</code> = Slide Down, <code>2</code> = Sine LFO, <code>3</code> = Knockout (Slide to 0), <code>4</code> = Triangle LFO, <code>5</code> = Square LFO, <code>6</code> = Sawtooth LFO.
+    </li>
+    <li><b>Set Panning (Ch, Pan):</b> Adjusts stereo panning (-100 Left, 0 Center, 100 Right).</li>
+    <li><b>Enable Tremolo LFO (Ch, Rate, Depth):</b> Applies a classic volume tremolo LFO.</li>
+    <li><b>Fade Channel (Ch, TargetVol, Speed, State):</b> Fades volume in or out dynamically.</li>
+    <li><b>Playlist - Add Track / Clear Queue (Ch, File):</b> Adds sound tracks to a sequential channel playlist. When a track finishes, the next queued track automatically plays!</li>
+    <li><b>Set ADSR Envelope (Ch, A, D, S, R):</b> Applies a synthesizer Attack-Decay-Sustain-Release volume envelope.</li>
+    <li><b>Randomize Pitch (Ch, Range):</b> Adds organic pitch variations (±Range Hz) to sound effects to avoid audio monotony.</li>
+    <li><b>Crossfade Channels (FromCh, ToCh, Speed):</b> Seamlessly transitions audio from one channel to another.</li>
+    <li><b>Set Channel Stopped (Ch):</b> Notifies C++ that a channel has stopped playing natively, releasing it immediately.</li>
+  </ul>
+
+  <h3>2. All Channels Actions (Global Controls)</h3>
+  <p>Convenient global controls that target all 48 channels simultaneously without requiring channel ID parameters.</p>
+  <ul>
+    <li><b>Stop All Channels:</b> Immediately stops audio across all channels.</li>
+    <li><b>Pause / Resume All Channels:</b> Pauses or resumes all channels.</li>
+    <li><b>Set All Volumes:</b> Adjusts master volume across all channels.</li>
+    <li><b>Set All Frequency Sweeps / Panning / Tremolos:</b> Applies pitch sweeps, panning, or tremolo effects to all channels.</li>
+    <li><b>Fade All Channels:</b> Initiates a master volume fade across all active channels.</li>
+  </ul>
+</body>
+</html>

@@ -1,0 +1,356 @@
+//----------------------------------------------------------------------------------
+//
+// CACTIVE : Objets actifs
+//
+//----------------------------------------------------------------------------------
+package Objects
+{
+	import Banks.*;
+	
+	import Frame.*;
+	
+	import OI.*;
+	
+	import RunLoop.*;
+	
+	import Services.*;
+	
+	import Sprites.*;
+	
+	import flash.display.*;
+	import flash.geom.ColorTransform;
+	
+	public class CActive extends CObject
+	{
+		public var bitmap:Bitmap;
+		public var image:CImage;
+		public var bShown:Boolean;
+//		public var scaleX:Number;
+//		public var scaleY:Number;
+//		public var angle:Number;
+		public var nLayer:int;
+		public var pLayer:CLayer;
+		public var startFade:int;
+		public var sprite:Sprite;
+		public var displayObject:DisplayObject;
+		public var bHandCursor:Boolean;
+		public var rcRotate:CRect=null;
+		public var ptRotate:CPoint=null;
+		public var alpha:Number=1.0;
+		
+		public function CActive()
+		{
+			bHandCursor=false;
+		}
+
+	    public override function handle():void
+	    {
+	        ros.handle();
+	        if (roc.rcChanged)
+	        {
+	            roc.rcChanged=false;
+	            modif();
+	        }
+	    }
+	    public override function modif():void
+	    {        
+	        ros.modifRoutine();
+	    }
+
+		public override function addSprite(x:int, y:int, i:int, layer:int, bShow:Boolean):void
+		{
+			nLayer=layer;
+			pLayer=hoAdRunHeader.rhFrame.layers[layer];
+
+			bitmap=new Bitmap();
+			displayObject=bitmap;
+		 	image=hoAdRunHeader.rhApp.imageBank.getImageFromHandle(i);
+			displayObject.x=x-image.xSpot+pLayer.x;
+			displayObject.y=y-image.ySpot+pLayer.y;
+			setEffect(ros.rsEffect, ros.rsEffectParam);
+			
+		 	bShown=bShow;
+		 	displayObject.visible=bShown;
+	 		bitmap.bitmapData=image.img;
+			pLayer.planeSprites.addChild(bitmap);
+			
+			setHandCursor(bHandCursor);
+		}
+		public override function setEffect(effect:int, effectParam:int):int
+		{		
+			var effectMasked:int=effect&CRSpr.BOP_MASK;
+			
+			alpha=1.0;
+			var r:int=255;
+			var g:int=255;
+			var b:int=255;
+			if ((effect & CRSpr.BOP_RGBAFILTER) != 0)
+			{
+				r=((effectParam&0xFFFFFF)>>16)&0xFF;
+				g=((effectParam&0xFFFFFF)>>8)&0xFF;
+				b=(effectParam&0xFFFFFF)&0xFF;
+				alpha = (((effectParam >> 24) & 0xFF) / 255.0);
+			}
+			else if (effectMasked == CRSpr.BOP_BLEND)
+			{
+				alpha = ((128 - effectParam) / 128.0);
+			}
+			switch(effectMasked)
+			{
+				case CRSpr.BOP_ADD:
+					displayObject.blendMode = "add";
+					displayObject.transform.colorTransform = new ColorTransform(r/255.0, g/255.0, b/255.0, 1, 0, 0, 0, 0);  
+					break;
+				case CRSpr.BOP_SUB:
+					displayObject.blendMode = "subtract";
+					displayObject.transform.colorTransform = new ColorTransform(r/255.0, g/255.0, b/255.0, 1, 0, 0, 0, 0);  
+					break;
+				case CRSpr.BOP_INVERT:
+					displayObject.blendMode = "normal";
+					displayObject.transform.colorTransform = new ColorTransform(-r/255.0, -g/255.0, -b/255.0, 1, 255, 255, 255, 0);  
+					break;
+				default: 
+					displayObject.blendMode = "normal";
+					displayObject.transform.colorTransform = new ColorTransform(r/255.0, g/255.0, b/255.0, 1, 0, 0, 0, 0);  
+					break;
+			}
+			displayObject.alpha=alpha;
+			return alpha;
+		}
+		public override function setHandCursor(bOn:Boolean):void
+		{
+			if (bOn)
+			{
+				if (bitmap!=null)
+				{
+					if (sprite==null)
+					{
+						var index:int=getChildIndex();
+						if (index>=pLayer.planeSprites.numChildren)
+						{
+							index=pLayer.planeSprites.numChildren-1;
+							if (index<0)
+							{
+								index=0;
+							}
+						}
+						sprite=new Sprite();
+						displayObject=sprite;
+						sprite.x=bitmap.x;
+						sprite.y=bitmap.y;
+						sprite.alpha=bitmap.alpha;
+						bitmap.alpha=1.0;
+						sprite.visible=bitmap.visible;
+						bitmap.visible=true;
+						bitmap.x=0;
+						bitmap.y=0;
+						sprite.buttonMode=true;
+						sprite.useHandCursor=true;
+						pLayer.planeSprites.removeChild(bitmap);
+						sprite.addChild(bitmap);
+						pLayer.planeSprites.addChildAt(sprite, index);
+						bHandCursor=true;
+					}					
+					else if (sprite!=null && bitmap!=null)
+					{
+						sprite.buttonMode=true;
+						sprite.useHandCursor=true;
+						bHandCursor=true;					
+					}
+				}
+			}
+			else
+			{
+				if (sprite!=null)
+				{	
+					sprite.buttonMode=false;
+					sprite.useHandCursor=false;
+					bHandCursor=false;
+				}
+			}			
+		}
+		public override function modifSprite(x:int, y:int, i:int, xScale:Number, yScale:Number, rotAngle:int):void
+		{
+			if (bitmap!=null)
+			{
+				var xx:int=x-hoImgXSpot+pLayer.x;
+				var yy:int=y-hoImgYSpot+pLayer.y;
+			 	image=hoAdRunHeader.rhApp.imageBank.getImageFromHandle(i);
+				bitmap.scaleX=xScale;
+				bitmap.scaleY=yScale;
+				bitmap.rotation=360-rotAngle;
+				
+				if (rotAngle==0)
+				{
+					displayObject.x=x-hoImgXSpot+pLayer.x;
+					displayObject.y=y-hoImgYSpot+pLayer.y;
+				}
+				else
+				{
+					var dest:CPoint=new CPoint();
+					var sx:Number=image.width*xScale;
+					var sy:Number=image.height*yScale;
+/*
+					CServices.rotateRect(sx, sy, dest, rotAngle);
+					displayObject.x=x+dest.x-hoImgXSpot+pLayer.x;
+					displayObject.y=y+dest.y-hoImgYSpot+pLayer.y;
+*/
+/*
+					if (rcRotate==null)
+					{
+						rcRotate=new CRect();
+					}
+					rcRotate.left = rcRotate.top = 0;
+					rcRotate.right = sx;
+					rcRotate.bottom = sy;
+					if (ptRotate==null)
+					{					
+						ptRotate=new CPoint();
+					}
+					ptRotate.x=0;
+					ptRotate.y=0;
+					CImageBank.doRotateRect(rcRotate, ptRotate, null, rotAngle);
+					displayObject.x=x+ptRotate.x-hoImgXSpot+pLayer.x;
+					displayObject.y=y+ptRotate.y-hoImgYSpot+pLayer.y;
+*/	
+					var ifo:CImage = hoAdRunHeader.rhApp.imageBank.getImageInfoEx(roc.rcImage, 0, roc.rcScaleX, roc.rcScaleY);
+					var xo:Number = -ifo.xSpot;  // coordonnées du point top-left par rapport au hot spot dans le repère du hot spot
+ 					var yo:Number = -ifo.ySpot;
+ 
+ 					var cosa:Number, sina:Number;
+ 					if ( rotAngle == 90.0 )
+ 					{
+  						cosa = 0.0;
+  						sina = 1.0;
+ 					}
+ 					else if ( rotAngle == 180.0 )
+ 					{
+  						cosa = -1.0;
+  						sina = 0.0;
+ 					}
+ 					else if ( rotAngle == 270.0 )
+ 					{
+  						cosa = 0.0;
+  						sina = -1.0;
+ 					}
+ 					else
+ 					{
+  						var arad:Number = Number(rotAngle * Math.PI / 180.0);
+  						cosa = Math.cos(arad);
+  						sina = Math.sin(arad);
+ 					}
+ 
+ 					var dx:Number = xo * cosa + yo * sina;  // rotation du point top-left dans le repère du hot spot
+ 					var dy:Number = yo * cosa - xo * sina;
+					displayObject.x=x+dx+pLayer.x;
+ 					displayObject.y=y+dy+pLayer.y;
+
+				}
+				if (image!=null)
+				{
+		 			bitmap.bitmapData=image.img;
+		 		}
+				bitmap.smoothing=(ros.rsFlags&CRSpr.RSFLAG_ROTATE_ANTIA)!=0;
+/*				
+				// DEBUGGAGE MASQUE				
+				if (image!=null && (roc.rcAngle!=0 || roc.rcScaleX!=1.0 || roc.rcScaleY!=1.0))
+				{
+					var mask:CMask=image.getMask(0, roc.rcAngle, roc.rcScaleX, roc.rcScaleY);
+					if (mask!=null)
+					{
+						var shape:Shape=hoAdRunHeader.rhApp.debugShape;
+						var x:int;
+						var y:int;
+						shape.graphics.clear();
+						shape.graphics.lineStyle(1, 0);
+						shape.graphics.moveTo(0,0);
+						shape.graphics.lineTo(mask.width, 0);
+						shape.graphics.lineTo(mask.width, mask.height);
+						shape.graphics.lineTo(0, mask.height);
+						shape.graphics.lineTo(0, 0);
+						for (y=0; y<mask.height; y++)
+						{
+							for (x=0; x<mask.width; x++)
+							{
+								var offset:int=y*mask.lineWidth+x/8;
+								var m:int=(0x80>>(x%8));
+								if ((mask.mask[offset]&m)!=0)
+								{
+									shape.graphics.moveTo(x, y);
+									shape.graphics.lineTo(x+1, y);
+								}
+							}
+						}		 
+						shape.graphics.lineStyle(1, 0xFFFF00);
+						shape.graphics.moveTo(mask.xSpot, mask.ySpot);		
+						shape.graphics.moveTo(mask.xSpot+1, mask.ySpot);		
+					}
+				}
+*/				
+			}
+		}
+		public override function delSprite():int
+		{
+			if (displayObject!=null)
+			{
+				var index:int=pLayer.planeSprites.getChildIndex(displayObject);
+				pLayer.planeSprites.removeChild(displayObject);
+				bitmap=null;
+				displayObject=null;
+				sprite=null;
+				return index;
+			}
+			return 0;
+		}
+		public override function showSprite():void
+		{
+			if (displayObject!=null)
+			{
+				displayObject.visible=true;
+			}
+			bShown=true;
+		}
+		public override function hideSprite():void
+		{
+			if (displayObject!=null)
+			{
+				displayObject.visible=false;
+			}
+			bShown=false;
+		}
+		public override function getChildIndex():int
+		{
+			if (displayObject!=null)
+			{
+				return pLayer.planeSprites.getChildIndex(displayObject);
+			}
+			return -1;
+		}
+		public override function getChildMaxIndex():int
+		{
+			return pLayer.planeSprites.numChildren;
+		}
+		public override function setChildIndex(index:int):void
+		{
+			if (index>=pLayer.planeSprites.numChildren)
+			{
+				index=pLayer.planeSprites.numChildren-1;
+			}
+			if (index<0)
+			{
+				index=0;
+			}
+			if (displayObject!=null)
+			{
+				pLayer.planeSprites.setChildIndex(displayObject, index);
+			}
+		}
+		public override function setTransparency(t:Number):void
+		{
+			if (displayObject!=null)
+			{
+				displayObject.alpha=t*alpha;
+			}
+		}
+	}
+}

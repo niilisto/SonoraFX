@@ -1,0 +1,31 @@
+# Visual Studio & MSBuild Build Outputs
+**/Release/
+**/Debug/
+**/*.obj
+**/*.iobj
+**/*.ipdb
+**/*.pdb
+**/*.tlog
+**/*.log
+**/*.res
+**/*.pch
+**/*.idb
+**/*.ilk
+**/*.sdf
+**/*.opensdf
+**/*.user
+
+# Antigravity & AI Assistant Scratch Files
+scratch/
+.system_generated/
+*.log
+
+# Windows System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Visual Studio Code & IDE Folders
+.vscode/
+.vs/

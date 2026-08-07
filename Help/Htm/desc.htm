@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>SonoraFX - Overview & Setup Guide</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #333; line-height: 1.6; }
+    h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 5px; }
+    h3 { color: #222; margin-top: 20px; }
+    pre { background: #f4f4f4; padding: 12px; border-left: 4px solid #0056b3; overflow-x: auto; font-size: 13px; }
+    .note { background: #e7f3fe; border-left: 4px solid #2196F3; padding: 10px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <h2>SonoraFX for Clickteam Fusion 2.5</h2>
+  <p>Welcome to <b>SonoraFX</b>! This extension acts as a high-level audio control layer for your Fusion games, granting you professional features like pitch sweeps, volume LFOs (tremolo), ADSR envelopes, seamless crossfading, playlists, and smart dynamic free-channel allocation.</p>
+
+  <h3>How It Works: The Event Bridge</h3>
+  <p>SonoraFX does not replace Fusion's internal sound player; instead, it supercharges it! You tell SonoraFX what you want to do (e.g., <i>"Play sound on Channel 0"</i>), and it automatically manages channel states, pitch curves, and LFOs, firing clean trigger events back to Fusion's native sound actions.</p>
+
+  <div class="note">
+    <b>Quick Setup (One-Time Event Sheet Wiring):</b><br>
+    Add these simple bridge rules to your Global Events or Frame Event Sheet once, and you are ready to go!
+  </div>
+
+  <pre>
+* SonoraFX: On Any Play Command
+  -> Sound : Play sample GetPlaySoundName$( "SonoraFX", TriggeredChannel( "SonoraFX" ) ), TriggeredLoops( "SonoraFX" ) times, on channel #TriggeredChannel( "SonoraFX" ), volume TriggeredVolume( "SonoraFX" ), pan TriggeredPan( "SonoraFX" ), frequency TriggeredFrequency( "SonoraFX" )
+
+* SonoraFX: On Any Frequency Change Command
+  -> Sound : Set frequency of channel #TriggeredChannel( "SonoraFX" ) to TriggeredFrequency( "SonoraFX" )
+
+* SonoraFX: On Any Volume Change Command
+  -> Sound : Set volume of channel #TriggeredChannel( "SonoraFX" ) to TriggeredVolume( "SonoraFX" )
+
+* SonoraFX: On Any Stop Command
+  -> Sound : Stop channel #TriggeredChannel( "SonoraFX" )
+
+* SonoraFX: On Any Pause Command
+  -> Sound : Pause channel #TriggeredChannel( "SonoraFX" )
+
+* SonoraFX: On Any Resume Command
+  -> Sound : Resume channel #TriggeredChannel( "SonoraFX" )
+  </pre>
+
+  <h3>Dynamic Free Channel Allocation (Channel 0)</h3>
+  <p>When you trigger <code>Play Audio on Channel 0</code>, SonoraFX automatically finds the lowest available free channel (from 1 to 48). If a background music track is playing on Channel 48 (or any other channel), SonoraFX detects it and leaves your music completely untouched!</p>
+
+</body>
+</html>

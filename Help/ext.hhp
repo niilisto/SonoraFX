@@ -1,0 +1,19 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=..\..\..\Help\AudioManager.chm
+Contents file=ext_cnt.hhc
+Default topic=Htm\index.htm
+Display compile progress=No
+Index file=ext_index.hhk
+Language=0x409 English (United States)
+Title=Audio Manager Help
+
+
+[FILES]
+Htm\index.htm
+Htm\desc.htm
+Htm\cnd.htm
+Htm\act.htm
+Htm\exp.htm
+
+[INFOTYPES]

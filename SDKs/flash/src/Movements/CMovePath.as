@@ -1,0 +1,703 @@
+//----------------------------------------------------------------------------------
+//
+// CMOVEPATH : Mouvement enregistre
+//
+//----------------------------------------------------------------------------------
+package Movements
+{
+	import Animations.*;
+	
+	import Application.*;
+	
+	import Objects.*;
+	
+	import Services.*;
+	import RunLoop.*;
+	
+	public class CMovePath extends CMove
+	{
+	    public var MT_Speed:int;
+	    public var MT_Sinus:int;
+	    public var MT_Cosinus:int;
+	    public var MT_Longueur:int;
+	    public var MT_XOrigin:int;
+	    public var MT_YOrigin:int;
+	    public var MT_XDest:int;
+	    public var MT_YDest:int;
+	    public var MT_MoveNumber:int;
+	    public var MT_Direction:Boolean;
+	    public var MT_Movement:CMoveDefPath;
+	    public var MT_Calculs:int;
+	    public var MT_XStart:int;
+	    public var MT_YStart:int;
+	    public var MT_Pause:int;
+	    public var MT_GotoNode:String;
+	    public var MT_FlagBranch:Boolean;
+	
+		public function CMovePath()
+		{
+		}
+
+	    public override function init(ho:CObject, mvPtr:CMoveDef):void
+	    {
+	        hoPtr=ho;
+	        
+	        var mtPtr:CMoveDefPath=CMoveDefPath(mvPtr);
+	        
+			MT_XStart=hoPtr.hoX;					//; Position de depart	
+			MT_YStart=hoPtr.hoY;
+		
+			MT_Direction=false;							//; Vers l'avant
+			MT_Pause=0;
+			hoPtr.hoMark1=0;
+	
+			MT_Movement=mtPtr;
+			hoPtr.roc.rcMinSpeed=mtPtr.mtMinSpeed;			//; Vitesses mini et maxi
+			hoPtr.roc.rcMaxSpeed=mtPtr.mtMaxSpeed;
+			MT_Calculs=0;
+			MT_GotoNode=null;
+		        mtGoAvant(0);                                           //; Branche le premier mouvement
+			moveAtStart(mvPtr);
+			hoPtr.roc.rcSpeed=MT_Speed;
+			hoPtr.roc.rcChanged=true;
+			if (MT_Movement.steps.length==0)
+			{
+			    stop();
+			}	
+	    }
+	    
+	    public override function move():void
+	    {
+			hoPtr.hoMark1=0;
+		
+			// Va faire les animations
+			// ~~~~~~~~~~~~~~~~~~~~~~~
+			hoPtr.roc.rcAnim=CAnim.ANIMID_WALK;
+			if (hoPtr.roa!=null)
+	            hoPtr.roa.animate();
+			
+			if (CRun.bMoveChanged)
+			{
+				return;
+			}
+
+			// On est en pause?
+			// ~~~~~~~~~~~~~~~
+			if (MT_Speed==0)						//; Arrete?
+			{
+	            var pause:int=MT_Pause;				//; Un compteur?
+	            if (pause==0)
+	            {
+	                hoPtr.roc.rcSpeed=0;
+	                hoPtr.hoAdRunHeader.newHandle_Collisions(hoPtr);
+	                return;
+	            }
+	            pause-=hoPtr.hoAdRunHeader.rhTimerDelta;
+				//trace(" pause "+pause);
+	            if (pause>0)
+	            {
+	                MT_Pause=pause;
+	                hoPtr.roc.rcSpeed=0;
+	                hoPtr.hoAdRunHeader.newHandle_Collisions(hoPtr);			//; Va gerer les collisions tout de meme
+	                return;
+	            }
+	            MT_Pause=0;
+				//trace("In Stop antes "+MT_Speed+", StopSpeed "+rmStopSpeed);
+	            MT_Speed=rmStopSpeed&0x7FFF;
+	            rmStopSpeed=0;
+				//trace("In Stop despues "+MT_Speed+", StopSpeed "+rmStopSpeed);
+				hoPtr.roc.rcSpeed=MT_Speed;
+			}
+	
+			// Decoupe le mouvement en plus petits troncons
+			// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			var calculs:int=0x100;
+	        if ((hoPtr.hoAdRunHeader.rhFrame.leFlags&CRunFrame.LEF_TIMEDMVTS)!=0)
+			{
+	            calculs=256.0*hoPtr.hoAdRunHeader.rh4MvtTimerCoef;
+			}
+			//else
+			//{
+	        //    calculs=0x100;
+			//}
+			hoPtr.hoAdRunHeader.rhMT_VBLCount=calculs;
+	        var breakMtNewSpeed:Boolean;
+	        while(true)
+	        {
+	        	breakMtNewSpeed=false;
+	            hoPtr.hoAdRunHeader.rhMT_VBLStep=calculs;
+	            calculs*=MT_Speed;
+	            calculs<<=5;                        // PIXEL_SPEED;
+	            if (calculs<=0x80000)					//; Pente <8
+	            {
+					calculs &= 0x7FFFFF;				// Filter added for negative values
+					hoPtr.hoAdRunHeader.rhMT_MoveStep=calculs;
+	            }
+	            else
+	            {
+					calculs=0x80000>>>5;            //PIXEL_SPEED;
+					calculs/=MT_Speed;
+					hoPtr.hoAdRunHeader.rhMT_VBLStep=calculs;                //; Nombre de VBL pour un pas
+					hoPtr.hoAdRunHeader.rhMT_MoveStep=0x80000;
+	            }
+	            while(true)
+	            {
+	                MT_FlagBranch=false;
+	                var flag:Boolean=mtMove(hoPtr.hoAdRunHeader.rhMT_MoveStep);
+	                if (flag==true && MT_FlagBranch==false)
+	                {
+	                	breakMtNewSpeed=true;
+	                	break;
+	                }	
+					if (hoPtr.hoAdRunHeader.rhMT_VBLCount==hoPtr.hoAdRunHeader.rhMT_VBLStep)
+	                {
+	                	breakMtNewSpeed=true;
+	                	break;
+	                }	
+					if (hoPtr.hoAdRunHeader.rhMT_VBLCount>hoPtr.hoAdRunHeader.rhMT_VBLStep)
+					{
+	                    hoPtr.hoAdRunHeader.rhMT_VBLCount-=hoPtr.hoAdRunHeader.rhMT_VBLStep;
+	                    calculs=hoPtr.hoAdRunHeader.rhMT_VBLCount;			//; OUI, on recalcule
+	                    break;
+	                }
+					calculs=hoPtr.hoAdRunHeader.rhMT_VBLCount*MT_Speed;
+					calculs<<=5;	    // PIXEL_SPEED
+	                mtMove(calculs);
+                	breakMtNewSpeed=true;
+                	break;
+	            };
+	            if (breakMtNewSpeed)
+	            {
+	            	break;
+	            }
+	        };
+	    }
+
+	    public function mtMove(step:int):Boolean
+	    {
+			// Fait un pas de mouvement
+			// ~~~~~~~~~~~~~~~~~~~~~~~~
+			step+=MT_Calculs;
+			var step2:int=step>>>16;
+			if (step2<MT_Longueur)
+			{
+	            MT_Calculs=step;
+	            var x:int=(step2*MT_Cosinus)/16384 + MT_XOrigin;		// Fois cosinus-> penteX
+	            var y:int=(step2*MT_Sinus)/16384 + MT_YOrigin;			// Fois sinus-> penteY
+	
+	            hoPtr.hoX=x;
+	            hoPtr.hoY=y;
+	            hoPtr.roc.rcChanged=true;
+	            hoPtr.hoAdRunHeader.newHandle_Collisions(hoPtr);				//; Appel les collisions
+	            return hoPtr.rom.rmMoveFlag;					//; Retourne avec les flags
+			}
+	
+			// Trop Long: tronquer le mouvement, et passer au suivant
+			// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			step2-=MT_Longueur;
+			step=(step2<<16)|(step&0xFFFF);
+			if (MT_Speed!=0)
+	            step/=MT_Speed;
+			step>>=5;                           // PIXEL_SPEED Nombre de VBL en trop
+			hoPtr.hoAdRunHeader.rhMT_VBLCount+=step&0xFFFF;				//; On additionne
+		
+			hoPtr.hoX=MT_XDest;
+			hoPtr.hoY=MT_YDest;
+			hoPtr.roc.rcChanged=true;
+			hoPtr.hoAdRunHeader.newHandle_Collisions(hoPtr);					//; Appel les collisions
+			if (hoPtr.rom.rmMoveFlag) 
+	            return true;			//; Sortie forcée si collision!
+	
+			// Passe au mouvement suivant / precedent
+			// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			hoPtr.hoMark1=hoPtr.hoAdRunHeader.rhLoopCount;				//; NODE REACHED
+			hoPtr.hoMT_NodeName=null;
+	
+			// Passe au node suivant
+			var number:int=MT_MoveNumber;
+			MT_Calculs=0;						//; En cas de message
+			if (MT_Direction==false)
+			{
+	            // Mouvement suivant
+	            // -----------------
+	            number++;
+	            if (number < MT_Movement.mtNumber)					//; Dernier mouvement?
+	            {
+	                hoPtr.hoMT_NodeName=MT_Movement.steps[number].mdName;
+	                
+	                // Goto node : on atteint le noeud?
+	                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	                if (MT_GotoNode!=null)
+	                {
+	                    if (MT_Movement.steps[number].mdName!=null)
+	                    {
+	                        if (CServices.compareStringsIgnoreCase(MT_GotoNode, MT_Movement.steps[number].mdName))
+	                        {
+	                            MT_MoveNumber=number;                   //; Au cas ou il y a des messages...
+	                            mtMessages();
+	                            return mtTheEnd();			//; Fin du mouvement
+	                        }
+	                    }
+	                }
+	                    
+	                // Mouvement suivant normal
+	                // ~~~~~~~~~~~~~~~~~~~~~~~~
+	                mtGoAvant(number);
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            // Fin du mouvement vers l'avant
+	            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	            hoPtr.hoMark2=hoPtr.hoAdRunHeader.rhLoopCount;	//; END OF PATH
+	            MT_MoveNumber=number;                               //; Au cas ou il y a des messages...
+	            if (MT_Direction)           			//; Les messages ont retourne le mouvement: FINI!
+	            {
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            if (MT_Movement.mtReverse != 0)
+	            {
+	                MT_Direction=true;
+	                number--;
+	                hoPtr.hoMT_NodeName=MT_Movement.steps[number].mdName;
+	                mtGoArriere(number);
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            mtReposAtEnd();					//; Repositionne a la fin si necessaire
+	            if (MT_Movement.mtLoop==0)						//; Loop?
+	            {
+	                mtTheEnd();					//; Fin du mouvement
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            number=0;
+	            mtGoAvant(number);
+	            mtMessages();
+	            return hoPtr.rom.rmMoveFlag;
+			}
+			else
+			{
+	            // Mouvement precedent
+	            // -------------------
+	
+	            // Goto node : on atteint le noeud?
+	            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	            if (MT_GotoNode!=null)
+	            {
+	                if (MT_Movement.steps[number].mdName!=null)
+	                {
+	                    if (CServices.compareStringsIgnoreCase(MT_GotoNode, MT_Movement.steps[number].mdName))
+	                    {
+	                        mtMessages();
+	                        return mtTheEnd();			//; Fin du mouvement
+	                    }
+	                }
+	            }                
+	            hoPtr.hoMT_NodeName=MT_Movement.steps[number].mdName;
+	            MT_Pause=MT_Movement.steps[number].mdPause;
+	            number--;
+	            if (number>=0)								//; Premier mouvement?
+	            {
+	                // Mouvement normal vers l'arriere
+	                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	                mtGoArriere(number);
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            // Arrive au debut du mouvement
+	            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	            mtReposAtEnd();					//; Repositionne a la fin si necessaire
+	            if (MT_Direction==false)
+	            {
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            if (MT_Movement.mtLoop==0)
+	            {
+	                mtTheEnd();							//; Fin du mouvement
+	                mtMessages();
+	                return hoPtr.rom.rmMoveFlag;
+	            }
+	            number=0;									//; Redemarre au debut
+	            MT_Direction=false;					//; On repart dans le bon sens
+	            mtGoAvant(number);
+	            mtMessages();
+	            return hoPtr.rom.rmMoveFlag;
+			}
+	    }
+
+	    // Un cran en avant
+	    // ----------------
+	    public function mtGoAvant(number:int):void
+	    {
+			if (number>=MT_Movement.steps.length)
+			{
+			    stop();
+			}
+			else
+			{
+			    MT_Direction=false;
+			    MT_MoveNumber=number;
+			    MT_Pause=MT_Movement.steps[number].mdPause;
+			    MT_Cosinus=MT_Movement.steps[number].mdCosinus;
+			    MT_Sinus=MT_Movement.steps[number].mdSinus;
+			    MT_XOrigin=hoPtr.hoX;
+			    MT_YOrigin=hoPtr.hoY;
+			    MT_XDest=hoPtr.hoX+MT_Movement.steps[number].mdDx;
+			    MT_YDest=hoPtr.hoY+MT_Movement.steps[number].mdDy;
+			    hoPtr.roc.rcDir=MT_Movement.steps[number].mdDir;
+			    mtBranche();
+			}
+	    }
+	    // Un cran en arriere
+	    // ------------------
+	    public function mtGoArriere(number:int):void
+	    {
+			if (number>=MT_Movement.steps.length)
+			{
+			    stop();
+			}
+			else
+			{
+			    MT_Direction=true;
+			    MT_MoveNumber=number;
+			    MT_Cosinus=-MT_Movement.steps[number].mdCosinus;
+			    MT_Sinus=-MT_Movement.steps[number].mdSinus;
+			    MT_XOrigin=hoPtr.hoX;
+			    MT_YOrigin=hoPtr.hoY;
+			    MT_XDest=hoPtr.hoX-MT_Movement.steps[number].mdDx;
+			    MT_YDest=hoPtr.hoY-MT_Movement.steps[number].mdDy;
+			    var dir:int=MT_Movement.steps[number].mdDir;
+			    dir+=16;
+			    dir&=31;
+			    hoPtr.roc.rcDir=dir;
+			    mtBranche();
+			}
+	    }
+	    // Met la fin des calculs
+	    public function mtBranche():void
+	    {
+			MT_Longueur=MT_Movement.steps[MT_MoveNumber].mdLength;
+			var speed:int=MT_Movement.steps[MT_MoveNumber].mdSpeed;
+	
+			// Faire une pause?
+			var pause:int=MT_Pause;
+			if (pause!=0)
+			{
+	            MT_Pause=pause*20;	
+	            speed|=0x8000;
+	            rmStopSpeed=speed;			//; La vitesse de stop
+			}
+			if (rmStopSpeed!=0)
+			{
+	            speed=0;								// Stop!
+			}
+			if (speed!=MT_Speed || speed!=0)
+			{
+	            MT_Speed=speed;
+	            hoPtr.rom.rmMoveFlag=true;
+	            MT_FlagBranch=true;
+			}
+			hoPtr.roc.rcSpeed=MT_Speed;
+			//trace("speed "+hoPtr.roc.rcSpeed+" lspeed "+speed);
+	    }
+	    // Envoie les messages NODE REACHED 
+	    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    public function mtMessages():void
+	    {
+			if (hoPtr.hoMark1==hoPtr.hoAdRunHeader.rhLoopCount)
+			{
+	            hoPtr.hoAdRunHeader.rhEvtProg.rhCurParam0=0;
+			    hoPtr.hoAdRunHeader.rhEvtProg.handle_Event(hoPtr, (-20<<16)|(hoPtr.hoType&0xFFFF) );	    // CNDL_EXTPATHNODE
+	            hoPtr.hoAdRunHeader.rhEvtProg.handle_Event(hoPtr, (-35<<16)|(hoPtr.hoType&0xFFFF) );	    // CNDL_EXTPATHNODENAME
+			}
+			if (hoPtr.hoMark2==hoPtr.hoAdRunHeader.rhLoopCount)
+			{
+	            hoPtr.hoAdRunHeader.rhEvtProg.rhCurParam0=0;
+			    hoPtr.hoAdRunHeader.rhEvtProg.handle_Event(hoPtr, (-21<<16)|(hoPtr.hoType&0xFFFF) );   // CNDL_EXTENDPATH
+			}
+	    }
+
+	    // Fin du mouvement
+	    // ~~~~~~~~~~~~~~~~
+	    public function mtTheEnd():Boolean
+	    {
+			MT_Speed=0;
+			rmStopSpeed=0;
+			hoPtr.rom.rmMoveFlag=true;
+	        MT_FlagBranch=false;
+			return true;
+	    }
+
+	    // Repositionner le sprite a la fin?
+	    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    public function mtReposAtEnd():void
+	    {
+			if (MT_Movement.mtRepos!=0)
+			{
+	            hoPtr.hoX=MT_XStart;
+	            hoPtr.hoY=MT_YStart;
+	            hoPtr.roc.rcChanged=true;
+			}
+	    }
+
+	    // Branche à un node selon son nom
+	    // -------------------------------
+	    public function mtBranchNode(pName:String):void
+	    {
+			var number:int;
+			for (number=0; number<MT_Movement.mtNumber; number++)
+			{
+	            if (MT_Movement.steps[number].mdName!=null)
+	            {
+	                if (CServices.compareStringsIgnoreCase(pName, MT_Movement.steps[number].mdName))
+	                {
+	                    if (MT_Direction==false)
+	                    {
+	                        // En avant
+	                        mtGoAvant(number);
+	                        hoPtr.hoMark1=hoPtr.hoAdRunHeader.rhLoopCount;
+	                        hoPtr.hoMT_NodeName=MT_Movement.steps[number].mdName;
+	                        hoPtr.hoMark2=0;
+	                        mtMessages();
+	                    }
+	                    else
+	                    {
+	                        if (number>0)
+	                        {
+	                            number--;
+	                            mtGoArriere(number);
+	                            hoPtr.hoMark1=hoPtr.hoAdRunHeader.rhLoopCount;
+	                            hoPtr.hoMT_NodeName=MT_Movement.steps[number].mdName;
+	                            hoPtr.hoMark2=0;
+	                            mtMessages();
+	                        }
+	                    }
+	                    hoPtr.rom.rmMoveFlag=true;
+	                    return;
+	                }
+	            }
+	        }
+	    }
+
+	    // Goto node : se rend a un noeud
+	    // ------------------------------
+	    public function freeMTNode():void
+	    {
+			MT_GotoNode=null;
+	    }
+	    public function mtGotoNode(pName:String):void
+	    {
+			var number:int;
+	
+			for (number=0; number<MT_Movement.mtNumber;  number++)
+			{
+	            if (MT_Movement.steps[number].mdName!=null)
+	            {
+	                if (CServices.compareStringsIgnoreCase(pName, MT_Movement.steps[number].mdName))
+	                {
+	                    if (number==MT_MoveNumber)
+	                    {
+	                        if (MT_Calculs==0)	// Au debut du node
+	                            return;						
+	                    }
+	
+	                    freeMTNode();
+	                    MT_GotoNode=pName;
+	
+	                    if (MT_Direction==false)
+	                    {
+	                        if (number>MT_MoveNumber)
+	                        {
+	                            // En avant
+	                            if (MT_Speed!=0)
+	                                return;
+	                            if ((rmStopSpeed&0x8000)!=0)
+	                                start();
+	                            else
+	                                mtGoAvant(MT_MoveNumber);
+	                            return;
+	                        }
+	                        else
+	                        {
+	                            // En arriere
+	                            if (MT_Speed!=0)
+	                            {
+	                                reverse();
+	                                return;
+	                            }
+	                            if ((rmStopSpeed&0x8000)!=0)
+	                            {
+	                                start();
+	                                reverse();
+	                            }
+	                            else
+	                            {
+	                                mtGoArriere(MT_MoveNumber-1);
+	                            }
+	                            return;
+	                        }
+	                    }
+	                    else
+	                    {
+	                        if (number<=MT_MoveNumber)
+	                        {
+	                            // En arriere
+	                            if (MT_Speed!=0)
+	                                return;
+	                            if ((rmStopSpeed&0x8000)!=0)
+	                                start();
+	                            else
+	                            {
+	                                mtGoArriere(MT_MoveNumber-1);
+	                            }
+	                            return;
+	                        }
+	                        else
+	                        {
+	                            // En avant
+	                            if (MT_Speed!=0)
+	                            {
+	                                reverse();
+	                                return;
+	                            }
+	                            if ((rmStopSpeed&0x8000)!=0)
+	                            {
+	                                start();
+	                                reverse();
+	                            }
+	                            else
+	                                mtGoAvant(MT_MoveNumber);
+	                            return;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+
+	    public override function stop():void
+	    {
+			if (rmStopSpeed==0)
+			{
+	            rmStopSpeed=MT_Speed|0x8000;
+			}
+			MT_Speed=0;
+			hoPtr.rom.rmMoveFlag=true;
+	    }
+	    public override function start():void
+	    {
+			if ((rmStopSpeed & 0x8000)!=0)
+			{
+	            MT_Speed=rmStopSpeed&0x7FFF;
+	            MT_Pause=0;							//; Stoppe la pause
+	            rmStopSpeed=0;
+	            hoPtr.rom.rmMoveFlag=true;
+			}
+	    }
+	    
+	    public override function reverse():void
+	    {
+			if (rmStopSpeed==0)
+			{
+	            hoPtr.rom.rmMoveFlag=true;
+	            var number:int=MT_MoveNumber;
+	            if (MT_Calculs==0)					//; Au milieu ou au debut?
+	            {
+	                // On est au debut d'un noeud: on passe au suivant / precedent
+	                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	                MT_Direction=CServices.tildBoolean(MT_Direction);
+	                if (MT_Direction)
+	                {
+	                    if (number==0)
+	                    {
+	                        MT_Direction=CServices.tildBoolean(MT_Direction);
+	                        return;
+	                    }
+	                    number--;
+	                    mtGoArriere(number);
+	                }
+	                else
+	                {
+	                    mtGoAvant(number);
+	                }
+	            }
+	            else
+	            {
+	                // On est en plein mouvement: on inverse les calculs
+	                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	                MT_Direction=CServices.tildBoolean(MT_Direction);						//; Avant/arriere
+	                MT_Cosinus=-MT_Cosinus;	//; Les pentes
+	                MT_Sinus=-MT_Sinus;
+	                var x1:int=MT_XOrigin;					//; Les coordonnees
+	                var x2:int=MT_XDest;
+	                MT_XOrigin=x2;
+	                MT_XDest=x1;
+	                x1=MT_YOrigin;
+	                x2=MT_YDest;
+	                MT_YOrigin=x2;
+	                MT_YDest=x1;
+	                hoPtr.roc.rcDir+=16;							//; La direction
+	                hoPtr.roc.rcDir&=31;
+	                var calcul:int=MT_Calculs>>>16;
+	                calcul=MT_Longueur-calcul;
+	                MT_Calculs=(calcul<<16)|(MT_Calculs&0xFFFF);
+	            }
+			}       
+	    }
+
+	    // ------------------------------------------
+	    // Changement de position d'un mouvement PATH
+	    // ------------------------------------------
+	    public override function setXPosition(x:int):void
+	    {
+			var x2:int=hoPtr.hoX;
+			hoPtr.hoX=x;
+		
+			x2-=MT_XOrigin;
+			x-=x2;
+			x2=MT_XDest-MT_XOrigin+x;
+			MT_XDest=x2;
+			x2=MT_XOrigin;
+			MT_XOrigin=x;
+			x2-=x;
+			MT_XStart-=x2;
+			hoPtr.rom.rmMoveFlag=true;
+			hoPtr.roc.rcChanged=true;
+			hoPtr.roc.rcCheckCollides=true;					//; Force la detection de collision
+	    }
+	    public override function setYPosition(y:int):void
+	    {
+			var y2:int=hoPtr.hoY;
+			hoPtr.hoY=y;
+		
+			y2-=MT_YOrigin;
+			y-=y2;
+			y2=MT_YDest-MT_YOrigin+y;
+			MT_YDest=y2;
+			y2=MT_YOrigin;
+			MT_YOrigin=y;
+			y2-=y;
+			MT_YStart-=y2;
+			hoPtr.rom.rmMoveFlag=true;
+			hoPtr.roc.rcChanged=true;
+			hoPtr.roc.rcCheckCollides=true;					//; Force la detection de collision
+	    }
+	    public override function setSpeed(speed:int):void
+	    {
+			if (speed<0) 
+	            speed=0;
+			if (speed>250) 
+	            speed=250;
+			MT_Speed=speed;
+			hoPtr.roc.rcSpeed=speed;
+			hoPtr.rom.rmMoveFlag=true;
+	    }
+	    public override function setMaxSpeed(speed:int):void
+	    {
+			setSpeed(speed);   
+	    }
+
+	}
+}

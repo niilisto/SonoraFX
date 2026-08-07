@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>SonoraFX - Expressions Reference</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #333; line-height: 1.6; }
+    h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 5px; }
+    h3 { color: #222; margin-top: 20px; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
+    ul { margin-left: 20px; }
+    li { margin-bottom: 12px; }
+    code { background: #f4f4f4; padding: 2px 5px; font-size: 13px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h2>SonoraFX - Expressions Guide</h2>
+
+  <h3>1. Trigger Event Readers</h3>
+  <p>These expressions read parameters from the current active trigger event. Use them inside your Command Bridge event rules!</p>
+  <ul>
+    <li><b>TriggeredChannel("SonoraFX"):</b> Returns the channel ID (1..48) that fired the current trigger.</li>
+    <li><b>GetPlaySoundName$("SonoraFX", Channel):</b> Returns the sound file name or sample string requested for the channel.</li>
+    <li><b>TriggeredVolume("SonoraFX"):</b> Returns the target volume (0..100) computed by LFOs or envelopes.</li>
+    <li><b>TriggeredFrequency("SonoraFX"):</b> Returns the computed frequency/pitch Hz (including sweeps and LFOs).</li>
+    <li><b>TriggeredPan("SonoraFX"):</b> Returns the computed stereo pan (-100..100).</li>
+    <li><b>TriggeredPosition("SonoraFX"):</b> Returns the playback position in milliseconds.</li>
+    <li><b>TriggeredLoops("SonoraFX"):</b> Returns the loop count parameter.</li>
+  </ul>
+
+  <h3>2. Channel State Inspectors</h3>
+  <ul>
+    <li><b>GetPlayState("SonoraFX", Channel):</b> Returns channel status: <code>1</code> = Playing, <code>2</code> = Paused, <code>3</code> = Stopped.</li>
+    <li><b>GetFreqOrigin("SonoraFX", Channel):</b> Returns the original baseline sampling rate (e.g., 44100 Hz) stored for the channel.</li>
+    <li><b>GetTriggeredFreqOrigin("SonoraFX"):</b> Returns the original frequency of the channel that fired the active trigger.</li>
+    <li><b>GetFreqOriginPct("SonoraFX", Channel, Percentage):</b> Calculates a safe target pitch frequency as a percentage of the original sample rate (e.g., 400% = 4x pitch up, guarding against 0 Hz reset crashes).</li>
+    <li><b>GetCustomTimer("SonoraFX"):</b> Returns the high-precision internal C++ runtime timer in seconds.</li>
+  </ul>
+</body>
+</html>

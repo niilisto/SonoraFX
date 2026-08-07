@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+	<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" %s styleName="plain" width="%i" height="%i"  backgroundColor="#ffffff" backgroundGradientColors="[#ffffff, #ffffff]" frameRate="%i"  applicationComplete="loadInitialState();" paddingTop="0" paddingBottom="0" paddingLeft="0" paddingRight="0">
+	<mx:XML id="runtimeData" format="e4x">
+
+	</mx:XML>	
+	
+	<mx:Script><![CDATA[
+	import mx.core.ByteArrayAsset;
+ 	import flash.text.TextField;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import Application.*;
+	
+	[Bindable]
+	[Embed(source="Application.ccf",mimeType="application/octet-stream")]
+	public var ccj:Class;			
+	public var ccjByteArray:ByteArrayAsset = ByteArrayAsset(new ccj());
+
+//S01
+[Embed(source="0000.mp3")]
+private var s0000:Class;
+[Embed(source="0001.mp3")]
+private var s0001:Class;
+[Embed(source="0002.mp3")]
+private var s0002:Class;
+[Embed(source="0003.mp3")]
+private var s0003:Class;
+[Embed(source="0004.mp3")]
+private var s0004:Class;
+[Embed(source="0005.mp3")]
+private var s0005:Class;
+[Embed(source="0006.mp3")]
+private var s0006:Class;
+[Embed(source="0007.mp3")]
+private var s0007:Class;
+[Embed(source="0008.mp3")]
+private var s0008:Class;
+[Embed(source="0009.mp3")]
+private var s0009:Class;
+[Embed(source="0010.mp3")]
+private var s0010:Class;
+[Embed(source="0011.mp3")]
+private var s0011:Class;
+[Embed(source="0012.mp3")]
+private var s0012:Class;
+[Embed(source="0013.mp3")]
+private var s0013:Class;
+[Embed(source="0014.mp3")]
+private var s0014:Class;
+[Embed(source="0015.mp3")]
+private var s0015:Class;
+[Embed(source="0016.mp3")]
+private var s0016:Class;
+[Embed(source="0017.mp3")]
+private var s0017:Class;
+[Embed(source="0018.mp3")]
+private var s0018:Class;
+[Embed(source="0019.mp3")]
+private var s0019:Class;
+[Embed(source="0020.mp3")]
+private var s0020:Class;
+[Embed(source="0021.mp3")]
+private var s0021:Class;
+//S01END
+//F01
+//F01END	
+
+	private function loadInitialState():void
+ 	{
+		var loaderInfo:LoaderInfo = this.root.loaderInfo;
+		if(loaderInfo.loader != null)
+		{
+			loaderInfo = loaderInfo.loader.contentLoaderInfo;
+		}
+		var flashVar:Object=loaderInfo.parameters;
+		var app:CRunApp = new CRunApp(ccjByteArray, this.stage, flashVar, loaderInfo);
+
+//S02
+var sounds:Array=new Array(22);
+sounds[0]=s0000;
+sounds[1]=s0001;
+sounds[2]=s0002;
+sounds[3]=s0003;
+sounds[4]=s0004;
+sounds[5]=s0005;
+sounds[6]=s0006;
+sounds[7]=s0007;
+sounds[8]=s0008;
+sounds[9]=s0009;
+sounds[10]=s0010;
+sounds[11]=s0011;
+sounds[12]=s0012;
+sounds[13]=s0013;
+sounds[14]=s0014;
+sounds[15]=s0015;
+sounds[16]=s0016;
+sounds[17]=s0017;
+sounds[18]=s0018;
+sounds[19]=s0019;
+sounds[20]=s0020;
+sounds[21]=s0021;
+app.setSounds(sounds);
+//S02END
+//F02
+//F02END
+//DEMOWARNING
+		
+	    app.load();
+	    app.startApplication();
+	}
+	]]></mx:Script>
+
+</mx:Application>
